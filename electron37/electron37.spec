@@ -1,8 +1,8 @@
 %global electron_major 37
-%global chromium_version 132.0.6834.110
+%global chromium_version 138.0.7204.251
 
 Name:           electron%{electron_major}
-Version:        37.0.0
+Version:        37.5.1
 Release:        1%{?dist}
 Summary:        Build cross platform desktop apps with web technologies
 
@@ -48,7 +48,7 @@ Electron from source is extremely resource-intensive and requires downloading
 ~20GB of Chromium dependencies.
 
 %prep
-%setup -q -c -T
+%setup -q -c -n electron-v%{version}-linux-x64
 unzip -q %{SOURCE0}
 
 %build
@@ -59,8 +59,9 @@ unzip -q %{SOURCE0}
 install -dm755 %{buildroot}%{_libdir}/%{name}
 install -dm755 %{buildroot}%{_bindir}
 
-# Install electron files
-cp -a * %{buildroot}%{_libdir}/%{name}/
+# Install electron files (already extracted in %prep)
+cp -a * %{buildroot}%{_libdir}/%{name}/ || true
+chmod -R u+rwX,go+rX %{buildroot}%{_libdir}/%{name}/
 
 # Install wrapper script
 install -Dm755 %{SOURCE3} %{buildroot}%{_bindir}/%{name}
