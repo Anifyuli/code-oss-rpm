@@ -11,6 +11,7 @@ URL:            https://github.com/microsoft/vscode
 Source0: https://github.com/microsoft/vscode/archive/refs/tags/%{version}.tar.gz#/vscode-%{version}.tar.gz
 Source1:        https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/code.mjs
 Source2:        https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/code.sh
+Source3:        https://raw.githubusercontent.com/microsoft/vscode/%{version}/package-lock.json
 Patch0:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/product_json.diff
 Patch1:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/clipath.patch
 Patch2:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/0009-openvsx-extension-signature.patch
@@ -53,6 +54,7 @@ for extensions instead of the Microsoft marketplace.
 
 %prep
 %autosetup -n vscode-%{version} -p1
+cp %{SOURCE3} ./package-lock.json
 
 # Set build metadata
 builddate=$(date -u -Is | sed 's/\+00:00/Z/')
