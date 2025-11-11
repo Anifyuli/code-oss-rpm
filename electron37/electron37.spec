@@ -6,83 +6,71 @@ Version:        37.5.1
 Release:        1%{?dist}
 Summary:        Build cross platform desktop apps with web technologies
 
-# Electron is MIT, but bundles many libraries with different licenses
-License:        MIT AND BSD-3-Clause AND Apache-2.0 AND ISC
-URL:            https://electronjs.org/
-# Note: Electron binaries are downloaded from official releases
-# Building from source requires downloading ~20GB of Chromium deps and takes 6+ hours
+License:        MIT AND BSD-3-Clause
+URL:            https://electronjs.org
+# Using official prebuilt binaries from GitHub releases
 Source0:        https://github.com/electron/electron/releases/download/v%{version}/electron-v%{version}-linux-x64.zip
-Source1:        https://github.com/electron/electron/releases/download/v%{version}/chromedriver-v%{version}-linux-x64.zip
-Source2:        https://github.com/electron/electron/releases/download/v%{version}/mksnapshot-v%{version}-linux-x64.zip
-Source3:        electron-launcher.sh
+Source1:        electron-launcher.sh
+Source2:        electron.desktop
 
 BuildRequires:  unzip
+BuildRequires:  desktop-file-utils
 
-# Runtime dependencies based on ldd output
+# Runtime dependencies based on Arch Linux electron package
+Requires:       c-ares
+Requires:       gcc-libs
+Requires:       glibc
 Requires:       gtk3
-Requires:       libnotify
+Requires:       libevent
+Requires:       libffi
+Requires:       libpulse
 Requires:       nss
-Requires:       libXScrnSaver
-Requires:       alsa-lib
-Requires:       libXtst
-Requires:       libdrm
-Requires:       mesa-libgbm
-Requires:       libxshmfence
+Requires:       zlib
 
-# Electron bundles ffmpeg and other libs
 Provides:       bundled(chromium) = %{chromium_version}
 Provides:       bundled(nodejs)
 Provides:       bundled(v8)
-Provides:       bundled(ffmpeg)
 
-# Only x86_64 is officially supported by upstream
+# Upstream only provides x86_64 binaries
 ExclusiveArch:  x86_64
 
 %description
 Electron is a framework for creating native applications with web technologies
-like JavaScript, HTML, and CSS. It takes care of the hard parts so you can
-focus on the core of your application.
+like JavaScript, HTML, and CSS.
 
-Note: This package contains pre-built binaries from upstream as building
-Electron from source is extremely resource-intensive and requires downloading
-~20GB of Chromium dependencies.
+This package contains prebuilt binaries from the official Electron releases.
+Building from source would require downloading 20GB+ of Chromium dependencies
+and 4-6 hours of build time.
 
 %prep
-%setup -q -c -n electron-v%{version}-linux-x64
-unzip -q %{SOURCE0}
+# Extract the zip file
+mkdir -p %{_builddir}/electron-v%{version}-linux-x64
+cd %{_builddir}/electron-v%{version}-linux-x64
+unzip -qo %{SOURCE0}
 
 %build
-# This is a binary repackage, no build needed
+# Binary repackage, no build needed
 
 %install
-# Create directory structure
+# Install electron files
 install -dm755 %{buildroot}%{_libdir}/%{name}
-install -dm755 %{buildroot}%{_bindir}
+cp -a * %{buildroot}%{_libdir}/%{name}/
 
-# Install electron files (already extracted in %prep)
-cp -a * %{buildroot}%{_libdir}/%{name}/ || true
-chmod -R u+rwX,go+rX %{buildroot}%{_libdir}/%{name}/
-
-# Install wrapper script
-install -Dm755 %{SOURCE3} %{buildroot}%{_bindir}/%{name}
-
-# Fix script to point to correct electron name
+# Install launcher script
+install -Dm755 %{SOURCE1} %{buildroot}%{_bindir}/%{name}
 sed -i "s|@ELECTRON@|%{name}|g" %{buildroot}%{_bindir}/%{name}
 
-# Install chromedriver
-cd %{buildroot}%{_libdir}/%{name}
-unzip -q %{SOURCE1}
+# Install desktop file
+install -Dm644 %{SOURCE2} %{buildroot}%{_datadir}/applications/%{name}.desktop
+sed -i "s|@ELECTRON@|%{name}|g" %{buildroot}%{_datadir}/applications/%{name}.desktop
 
-# Install mksnapshot  
-unzip -q %{SOURCE2}
-
-# Remove .so files that conflict with system libraries
-# but keep bundled versions that are needed
-rm -f libffmpeg.so || true
+%check
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 %files
 %{_bindir}/%{name}
 %{_libdir}/%{name}/
+%{_datadir}/applications/%{name}.desktop
 
 %changelog
 * Tue Nov 11 2025 Anifyuliansyah <anifyuli007@outlook.co.id> - 37.0.0-1
