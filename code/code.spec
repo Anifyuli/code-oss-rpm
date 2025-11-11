@@ -19,6 +19,9 @@ Patch2:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/cod
 BuildRequires:  nodejs >= %{nodejs_min}
 BuildRequires:  npm
 BuildRequires:  git-core
+BuildRequires:  krb5-devel
+BuildRequires:  cyrus-sasl-devel
+BuildRequires:  python3-devel
 BuildRequires:  python3
 BuildRequires:  gcc-c++
 BuildRequires:  make
