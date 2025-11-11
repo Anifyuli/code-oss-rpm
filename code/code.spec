@@ -110,7 +110,7 @@ export npm_config_cache="%{_builddir}/.npm"
 export XDG_CACHE_HOME="%{_builddir}/.cache"
 
 # Install dependencies
-npm ci --legacy-peer-deps
+npm ci --legacy-peer-deps || npm install --legacy-peer-deps
 
 # Build minified production version
 npm run gulp vscode-linux-x64-min
