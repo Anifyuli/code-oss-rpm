@@ -8,12 +8,12 @@ Summary:        Open source build of Visual Studio Code editor
 
 License:        MIT
 URL:            https://github.com/microsoft/vscode
-Source0:        https://github.com/microsoft/vscode/archive/%{version}/vscode-%{version}.tar.gz
-Source1:        https://github.com/Anifyuli/code-oss-rpm/blob/main/code/code.mjs
-Source2:        https://github.com/Anifyuli/code-oss-rpm/blob/main/code/code.sh
-Patch0:         https://github.com/Anifyuli/code-oss-rpm/blob/main/code/product_json.diff
-Patch1:         https://github.com/Anifyuli/code-oss-rpm/blob/main/code/clipath.patch
-Patch2:         https://github.com/Anifyuli/code-oss-rpm/blob/main/code/0009-openvsx-extension-signature.patch
+Source0: https://github.com/microsoft/vscode/archive/refs/tags/%{version}.tar.gz#/vscode-%{version}.tar.gz
+Source1:        https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/code.mjs
+Source2:        https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/code.sh
+Patch0:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/product_json.diff
+Patch1:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/clipath.patch
+Patch2:         https://raw.githubusercontent.com/Anifyuli/code-oss-rpm/main/code/0009-openvsx-extension-signature.patch
 
 BuildRequires:  nodejs >= %{nodejs_min}
 BuildRequires:  npm
